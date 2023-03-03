@@ -96,11 +96,12 @@
 	.page {
 		width: 100vw;
 		height: 100vh;
+		max-height: 100vh;
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-rows: 40px calc(100vh - 40px);
 		align-items: stretch;
 		justify-content: stretch;
 	}
@@ -122,14 +123,14 @@
 	}
 
 	.content {
-		flex: 1 0 auto;
+		flex: 1 1 auto;
 		width: 100%;
+		max-height: 100%;
 		margin: auto;
 		display: flex;
 		flex-direction: row;
 		align-items: stretch;
 		justify-content: stretch;
 		padding: 20px;
-		overflow: hidden;
 	}
 </style>

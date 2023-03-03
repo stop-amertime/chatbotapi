@@ -13,8 +13,10 @@
 		<button
 			class="convo-tab"
 			class:active={activeTab == index}
-			on:click={() => (activeTab = index)}>{convo.title}</button
-		>
+			contenteditable
+			bind:innerHTML={convo.title}
+			on:click={() => (activeTab = index)}
+		/>
 	{/each}
 
 	<button
@@ -32,7 +34,7 @@
 		flex: 0 1 200px;
 		display: flex;
 		flex-direction: column;
-		overflow: auto;
+		overflow-y: auto;
 		align-items: stretch;
 		justify-content: stretch;
 		max-height: 70%;
@@ -45,7 +47,11 @@
 			text-overflow: ellipsis;
 			border: 1px solid rgb(217, 217, 217);
 			font-family: Arial, Helvetica, sans-serif;
-			transition: all 0.1s ease;
+			transition: all 0.2s ease;
+
+			&:hover {
+				filter: brightness(1.05);
+			}
 		}
 
 		button.new-conversation {
@@ -55,9 +61,10 @@
 
 		.convo-tab.active {
 			background-color: rgb(255, 255, 255);
-			border-right: 1px solid white;
-			margin-right: 1px;
 			z-index: 50;
+			font-weight: bold;
+			border-right: none;
+			cursor: text;
 		}
 	}
 </style>
