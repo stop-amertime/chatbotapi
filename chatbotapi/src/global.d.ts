@@ -11,6 +11,7 @@ type GptPrompt = {
 	prompt: string;
 	description?: string;
 	status?: string;
+	emoji?: string;
 };
 
 type GptCharacter = { name: string } & GptPrompt;

@@ -6,13 +6,13 @@
 	import { getChatCompletion } from "./lib/openaiAdapter";
 	import ConversationList from "./lib/TabList.svelte";
     import CharSelect from "./lib/CharSelect.svelte";
-	const activePrompt = prompts[4].prompt;
+	const activePrompt = prompts[3].prompt;
 
 	/* -------------------------------------------------------------------------- */
 
 	let conversationNumber = 0; 
 	// Default prompt
-	const defaultCharacter: GptCharacter = prompts[4];
+	const defaultCharacter: GptCharacter = prompts[3];
 	const characters: GptCharacter[] = prompts;
 	const makeDefaultConversation = (title: string = "...Untitled") => {
 		return {
@@ -79,7 +79,7 @@
 
 <div class="page">
 	<nav>
-		<h1 class="title">Chat<b>PCP</b></h1>
+		<h1 class="title">Crap<b>GPT</b></h1>
 	</nav>
 
 	<div class="content">
@@ -131,7 +131,7 @@
 		h1 {
 			width: 100%;
 			color: darkorange;
-			font-family: "Consolas", monospace;
+			font-family: 'Source Code Pro',"Consolas", monospace;
 			font-weight: bold;
 			font-size: 36px;
 			padding: 0px;
