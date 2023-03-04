@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-
 	let dispatch = createEventDispatcher();
 	const createConversation = () => dispatch("createConversation");
 	const randomfn = () => dispatch("randomfn");
@@ -14,9 +13,8 @@
 			class="convo-tab"
 			class:active={activeTab == index}
 			contenteditable
-			bind:innerHTML={convo.title}
 			on:click={() => (activeTab = index)}
-		/>
+		>{convo?.title || "...?"}</button>
 	{/each}
 
 	<button
@@ -28,7 +26,7 @@
 </div>
 
 <style lang="scss">
-	$borderColor: rgb(239, 239, 239);
+	$borderColor: rgb(141, 130, 130);
 
 	.wrapper {
 		flex: 0 1 200px;
@@ -37,11 +35,10 @@
 		overflow-y: auto;
 		align-items: stretch;
 		justify-content: stretch;
-		max-height: 70%;
 
 		.convo-tab,
 		.new-conversation {
-			flex: 1 1 50px;
+			flex: 0 1 50px;
 			text-align: left;
 			padding: 5px 10px;
 			text-overflow: ellipsis;

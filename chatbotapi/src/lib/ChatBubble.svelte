@@ -21,7 +21,7 @@
 		width: fit-content;
 		white-space: pre-line;
 		max-width: min(90ch, 90%);
-		background-color: rgb(255, 255, 255);
+		background-color: rgb(249, 233, 233);
 		border-radius: 7px;
 		margin-left: auto;
 		padding: 12px 15px;
