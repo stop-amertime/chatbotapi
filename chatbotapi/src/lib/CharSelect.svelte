@@ -37,7 +37,7 @@
     }
 
     h2 {
-
+        font-family: Source Code Pro, Consolas, monospace;
     }
 
     .cards-wrapper {
