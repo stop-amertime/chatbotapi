@@ -4,13 +4,16 @@
 	import { prompts } from "../public/prompts";
 	import { writable } from "svelte/store";
 	import { getChatCompletion } from "./lib/openaiAdapter";
-	import ConversationList from "./lib/ConversationList.svelte";
+	import ConversationList from "./lib/TabList.svelte";
+    import CharSelect from "./lib/CharSelect.svelte";
 	const activePrompt = prompts[4].prompt;
 
 	/* -------------------------------------------------------------------------- */
 
+	let conversationNumber = 0; 
 	// Default prompt
 	const defaultCharacter: GptCharacter = prompts[4];
+	const characters: GptCharacter[] = prompts;
 	const makeDefaultConversation = (title: string = "...Untitled") => {
 		return {
 			title,
@@ -29,7 +32,7 @@
 
 	function createConversation() {
 		localStorage.setItem("conversations", JSON.stringify(conversations));
-		conversations = [...conversations, makeDefaultConversation()];
+		conversations = [...conversations, null];
 	}
 	const changeTab = (tabNumber: number) => {
 		activeTab = tabNumber;
@@ -42,11 +45,13 @@
 	let userPrompt = "";
 
 	const askGPT = (newMessage: string) => {
+
 		activeConversation.messages = [
 			...activeConversation.messages,
 			{ role: "user", content: newMessage },
 		];
 		userPrompt = "";
+
 		//@ts-ignore
 		getChatCompletion(newMessage, activeConversation.messages).then(resp => {
 			activeConversation.messages = resp.messages;
@@ -62,6 +67,14 @@
 
 	const saveConversations = () =>
 		localStorage.setItem("conversations", JSON.stringify(conversations));
+
+	function initConversation (char: GptCharacter) {
+		activeConversation = {
+			title: char.name + " " + conversationNumber++,
+			character: char,
+			messages: [{ role: "system", content: char.prompt }],
+		};
+	}
 </script>
 
 <div class="page">
@@ -76,10 +89,15 @@
 			bind:activeTab
 			{conversations}
 		/>
-		<ChatWindow
-			messages={activeConversation.messages}
-			on:userMessage={event => askGPT(event.detail)}
-		/>
+
+			{#if !activeConversation}
+			<CharSelect {characters} on:newCharacter={(e) => initConversation(e.detail)}/>
+			{:else}
+			<ChatWindow
+				{activeConversation}
+				on:userMessage={event => askGPT(event.detail)}
+			/>
+			{/if}
 	</div>
 </div>
 
@@ -107,7 +125,7 @@
 	}
 
 	nav {
-		background-color: rgb(255, 237, 219);
+		background-color: rgb(215, 152, 89);
 
 		h1 {
 			width: 100%;
@@ -123,14 +141,15 @@
 	}
 
 	.content {
-		flex: 1 1 auto;
+		padding: 15px;
 		width: 100%;
-		max-height: 100%;
-		margin: auto;
-		display: flex;
+		height: 100%;
+		display: grid;
 		flex-direction: row;
+		grid-template-columns: 100px 1fr; 
 		align-items: stretch;
 		justify-content: stretch;
-		padding: 20px;
 	}
+
+	
 </style>

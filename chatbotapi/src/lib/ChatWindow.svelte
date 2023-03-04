@@ -1,7 +1,8 @@
 <script lang="ts">
-	import MessageBox from "./MessageBox.svelte";
+	import MessageBox from "./ChatBubble.svelte";
 	import { onMount } from "svelte";
-	export let messages: GptMessage[];
+
+	export let activeConversation: GptConversation;
 	import { createEventDispatcher } from "svelte";
 
 	let userInput = "";
@@ -28,7 +29,7 @@
 
 <div class="chat-window">
 	<div class="messages-area">
-		{#each messages as msg}
+		{#each activeConversation.messages as msg}
 			{#if msg.role != "system"}
 				<MessageBox {...msg} />
 			{/if}
@@ -43,7 +44,7 @@
 		<textarea
 			class="inputBox"
 			bind:value={userInput}
-			placeholder="Ask Dan anything..."
+			placeholder="Ask {activeConversation.character.name} anything..."
 		/>
 		<button>➤</button>
 	</form>
@@ -51,12 +52,13 @@
 
 <style lang="scss">
 	$messageFont: Arial, Helvetica, sans-serif;
-	$borderColor: rgb(239, 239, 239);
+	$borderColor: rgb(118, 109, 109);
 
 	* {
 		box-sizing: border-box;
 	}
 	.chat-window {
+		min-height: 700px;
 		border-radius: 2px;
 		flex: 0 1 1024px;
 		display: flex;
