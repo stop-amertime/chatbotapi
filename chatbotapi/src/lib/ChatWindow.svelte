@@ -88,8 +88,8 @@
 			font-family: $messageFont;
 			word-wrap: break-word;
         word-break: break-all;
-			border: 1px solid $borderColor;
 			outline: none;
+			border: none;
 			flex: 1 0 auto;
 			margin: 2px 5px;
 			padding: 5px;
@@ -98,7 +98,7 @@
 			resize: vertical;
 			max-height: 150px;
 			min-height: 40px;
-			box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+			// box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 		}
 
 		button {

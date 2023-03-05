@@ -6,11 +6,16 @@
 	import { getChatCompletion } from "./lib/openaiAdapter";
 	import TabList from "./lib/TabList.svelte";
     import CharSelect from "./lib/CharSelect.svelte";
-	const activePrompt = prompts[3].prompt;
+	import Sidebar from "./lib/sidebar/Sidebar.svelte";
+	import Hamburger from './lib/sidebar/Hamburger.svelte';
 
 	/* -------------------------------------------------------------------------- */
 
 	let conversationNumber = 0; 
+	let pageWidth = 1024;
+	$: useMobileLayout = pageWidth < 800;
+	let isSidebarOpen = false; 
+
 	// Default prompt
 	const defaultCharacter: GptCharacter = prompts[3];
 	const characters: GptCharacter[] = prompts;
@@ -42,6 +47,7 @@
 	function createConversation() {
 		localStorage.setItem("conversations", JSON.stringify(conversations));
 		conversations = [...conversations, makeBlankConversation()];
+		activeTab = conversations.length - 1;
 	}
 	const changeTab = (tabNumber: number) => {
 		activeTab = tabNumber;
@@ -89,27 +95,45 @@
 	}
 </script>
 
-<div class="page">
+<div class="page" bind:clientWidth={pageWidth}>
+
+	
+
 	<nav>
+		{#if useMobileLayout}
+		<Hamburger bind:open={isSidebarOpen}/>
+		{/if}
 		<h1 class="title">Crap<b>GPT</b></h1>
 	</nav>
 
 	<div class="main">
-		<TabList
-			on:createConversation={e => createConversation()}
-			on:randomfn={e => reset()}
-			bind:activeTab
-			{conversations}
-		/>
+			
+		{#if useMobileLayout}
+		<Sidebar bind:open={isSidebarOpen}>
+			<TabList
+					on:createConversation={e => createConversation()}
+					on:randomfn={e => reset()}
+					bind:activeTab
+					{conversations}
+				/>
+		</Sidebar>
+		{:else}
+			<TabList
+				on:createConversation={e => createConversation()}
+				on:randomfn={e => reset()}
+				bind:activeTab
+				{conversations}
+			/>
+		{/if}
 
-			{#if !conversations[activeTab]?.character}
+		{#if !conversations[activeTab]?.character}
 			<CharSelect {characters} on:newCharacter={(e) => initConversation(e.detail)}/>
-			{:else}
+		{:else}
 			<ChatWindow
 				activeConversation={conversations[activeTab]}
 				on:userMessage={event => askGPT(event.detail)}
 			/>
-			{/if}
+		{/if}
 	</div>
 </div>
 
@@ -139,18 +163,23 @@
 
 	nav {
 		background-color: rgb(215, 152, 89);
+		border-bottom: 1px solid rgb(148, 81, 0);
+		display: flex;
+
 
 		h1 {
 			width: 100%;
 			color: darkorange;
 			font-family: 'Source Code Pro',"Consolas", monospace;
 			font-weight: bold;
-			font-size: 36px;
+			font-size: 30px;
 			padding: 0px;
 			margin: 0px;
 			margin-left: 50px;
 			color: rgb(255, 255, 255);
 		}
+
+
 	}
 
 	.main {
@@ -162,7 +191,10 @@
 		grid-template-columns: 150px 1fr; 
 		align-items: stretch;
 		justify-content: stretch;
+
+		@media(max-width: 800px) {
+			grid-template-columns: 1fr;
+		}
 	}
 
-	
 </style>
