@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChatWindow from "./lib/ChatWindow.svelte";
 	import { onMount } from "svelte";
-	import { prompts } from "../public/prompts";
+	import { prompts } from "./lib/prompts";
 	import { writable } from "svelte/store";
 	import { getChatCompletion } from "./lib/openaiAdapter";
 	import TabList from "./lib/TabList.svelte";
