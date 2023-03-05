@@ -17,8 +17,16 @@
         {#each characters as c}
 
             <button class="character-card" on:click={(e) => newCharacter(c)}>
-                <h2>{c.name}</h2>
-                <p>{c.description || "No description listed..."}</p>
+                <div class="emoji-col">
+                    {c?.emoji || "?"}
+                </div>
+                <div class="text-col">
+                <div class="title-row">
+                    <div class="name">{c.name}</div>
+                    <div class="version">{c.version}</div>
+                </div>
+                <div class="description">{c.description}</div>
+            </div>
             </button>
             
         {/each}
@@ -50,6 +58,52 @@
         box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
         margin: 5px;
         border-radius: 5px;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        align-items: center;
+        justify-content: space-between;
+
+        .emoji-col {
+            font-size: 25px;
+            margin: 10px;
+        }
+
+        .text-col {
+            display: flex; 
+            flex-direction: column;
+            text-align: left;
+
+            .title-row {
+                margin: 2px 10px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                font-family: 'Source Code Pro', 'Consolas', monospace;
+                
+                .name{ 
+                    font-size: 20px;
+                    margin-right: 10px;
+                    font-family: 'Source Code Pro', 'Consolas', monospace;
+                }
+
+                .version {
+                    font-size: 12px;
+                    color: gray;
+                    padding: 2px 4px;
+                    border: 1px solid rgb(214, 214, 214); 
+                    border-radius: 10px;
+                }
+            }
+
+            .description {
+                font-family: 'Source Code Pro', 'Consolas', monospace;
+                margin: 2px 10px 10px;
+                max-width: 60ch;
+
+            }
+
+        }
     }
 
 

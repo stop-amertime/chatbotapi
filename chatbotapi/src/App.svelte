@@ -4,7 +4,7 @@
 	import { prompts } from "../public/prompts";
 	import { writable } from "svelte/store";
 	import { getChatCompletion } from "./lib/openaiAdapter";
-	import ConversationList from "./lib/TabList.svelte";
+	import TabList from "./lib/TabList.svelte";
     import CharSelect from "./lib/CharSelect.svelte";
 	const activePrompt = prompts[3].prompt;
 
@@ -22,17 +22,26 @@
 		};
 	};
 
+	const makeBlankConversation = (title: string = "...Untitled") => {
+		return {
+			title,
+			character: null,
+			messages: null,
+		};
+	};
+
 	// Load past conversations.
 	const load_string = localStorage.getItem("conversations");
 	let conversations = load_string
 		? JSON.parse(load_string)
 		: [makeDefaultConversation()];
 	let activeTab = 0;
-	$: activeConversation = conversations[activeTab];
+
+	conversations = conversations.filter(c => (c!=null && c.character!=null && c.title!=null));
 
 	function createConversation() {
 		localStorage.setItem("conversations", JSON.stringify(conversations));
-		conversations = [...conversations, null];
+		conversations = [...conversations, makeBlankConversation()];
 	}
 	const changeTab = (tabNumber: number) => {
 		activeTab = tabNumber;
@@ -46,21 +55,24 @@
 
 	const askGPT = (newMessage: string) => {
 
-		activeConversation.messages = [
-			...activeConversation.messages,
+		conversations[activeTab].messages = [
+			...conversations[activeTab].messages,
 			{ role: "user", content: newMessage },
 		];
 		userPrompt = "";
 
 		//@ts-ignore
-		getChatCompletion(newMessage, activeConversation.messages).then(resp => {
-			activeConversation.messages = resp.messages;
+		getChatCompletion(newMessage, conversations[activeTab].messages).then(resp => {
+			conversations[activeTab].messages = resp.messages;
 			saveConversations();
 		});
+
+		localStorage.setItem("conversations", JSON.stringify(conversations));
+
 	};
 
 	const reset = () => {
-		activeConversation.messages = [
+		conversations[activeTab].messages = [
 			{ role: "system", content: defaultCharacter.prompt },
 		];
 	};
@@ -69,7 +81,7 @@
 		localStorage.setItem("conversations", JSON.stringify(conversations));
 
 	function initConversation (char: GptCharacter) {
-		activeConversation = {
+		conversations[activeTab] = {
 			title: char.name + " " + conversationNumber++,
 			character: char,
 			messages: [{ role: "system", content: char.prompt }],
@@ -82,19 +94,19 @@
 		<h1 class="title">Crap<b>GPT</b></h1>
 	</nav>
 
-	<div class="content">
-		<ConversationList
+	<div class="main">
+		<TabList
 			on:createConversation={e => createConversation()}
 			on:randomfn={e => reset()}
 			bind:activeTab
 			{conversations}
 		/>
 
-			{#if !activeConversation}
+			{#if !conversations[activeTab]?.character}
 			<CharSelect {characters} on:newCharacter={(e) => initConversation(e.detail)}/>
 			{:else}
 			<ChatWindow
-				{activeConversation}
+				activeConversation={conversations[activeTab]}
 				on:userMessage={event => askGPT(event.detail)}
 			/>
 			{/if}
@@ -108,7 +120,7 @@
 	}
 
 	:global(*) {
-		font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+		font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
 	}
 	$borderColor: rgb(239, 239, 239);
 
@@ -141,13 +153,13 @@
 		}
 	}
 
-	.content {
-		padding: 15px;
+	.main {
 		width: 100%;
 		height: 100%;
+		overflow: auto;
 		display: grid;
 		flex-direction: row;
-		grid-template-columns: 100px 1fr; 
+		grid-template-columns: 150px 1fr; 
 		align-items: stretch;
 		justify-content: stretch;
 	}

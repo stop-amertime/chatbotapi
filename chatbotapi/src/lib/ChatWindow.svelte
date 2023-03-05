@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	let userInput = "";
+	let submitButton: HTMLButtonElement;
 
 	// Dispatch Inputs
 	let dispatch = createEventDispatcher();
@@ -17,17 +18,19 @@
 	const trimString = (str: string) => str.replace(/^\s+|\s+$/g, "");
 
 	onMount(() => {
-		document.querySelector(".inputBox").addEventListener("keydown", event => {
+		document.querySelector(".inputBox").addEventListener("keypress", event => {
 			//@ts-ignore
-			if (event.keyCode == "Enter") {
+			if (event.keyCode == 13) {
 				event.preventDefault();
-				document.forms[0].submit();
+				if (userInput){
+				submitButton.click();
+				}
 			}
 		});
 	});
 </script>
 
-<div class="chat-window">
+<div class="component">
 	<div class="messages-area">
 		{#each activeConversation.messages as msg}
 			{#if msg.role != "system"}
@@ -36,18 +39,14 @@
 		{/each}
 	</div>
 
-	<form
-		autocomplete="off"
-		class="userinput"
-		on:submit|preventDefault={() => sendUserMessage(userInput)}
-	>
+	<div class="userinput">
 		<textarea
 			class="inputBox"
 			bind:value={userInput}
 			placeholder="Ask {activeConversation.character.name} anything..."
 		/>
-		<button>➤</button>
-	</form>
+		<button bind:this={submitButton} on:click={() => sendUserMessage(userInput)}>➤</button>
+	</div>
 </div>
 
 <style lang="scss">
@@ -57,22 +56,22 @@
 	* {
 		box-sizing: border-box;
 	}
-	.chat-window {
-		min-height: 700px;
+	.component {
 		border-radius: 2px;
-		flex: 0 1 1024px;
-		display: flex;
-		flex-direction: column;
+		height: 100%;
+		display: grid;
+		grid-template-rows: 1fr 70px;
 		align-items: stretch;
 		justify-content: stretch;
-		border: 1px solid $borderColor;
+		border-left: 1px solid $borderColor;
+		overflow: hidden;
 	}
 
 	.messages-area {
 		font-family: $messageFont;
-		flex: 1 1 auto;
+		flex: 0 1 auto;
 		width: 100%;
-		padding: 10px;
+		padding: 10px 15px;
 		overflow-y: scroll;
 		scrollbar-width: thin;
 	}
@@ -87,6 +86,8 @@
 
 		.inputBox {
 			font-family: $messageFont;
+			word-wrap: break-word;
+        word-break: break-all;
 			border: 1px solid $borderColor;
 			outline: none;
 			flex: 1 0 auto;

@@ -13,8 +13,9 @@
 			class="convo-tab"
 			class:active={activeTab == index}
 			contenteditable
+			bind:innerHTML={convo.title}
 			on:click={() => (activeTab = index)}
-		>{convo?.title || "...?"}</button>
+		></button>
 	{/each}
 
 	<button
@@ -29,7 +30,7 @@
 	$borderColor: rgb(141, 130, 130);
 
 	.wrapper {
-		flex: 0 1 200px;
+		padding-top: 20px;
 		display: flex;
 		flex-direction: column;
 		overflow-y: auto;
@@ -39,6 +40,8 @@
 		.convo-tab,
 		.new-conversation {
 			flex: 0 1 50px;
+			color: rgb(82, 79, 79);
+			background-color:rgb(238, 238, 238);
 			text-align: left;
 			padding: 5px 10px;
 			text-overflow: ellipsis;
