@@ -9,6 +9,7 @@ type GptMessage = {
 
 type GptPrompt = {
 	prompt: string;
+	version?: string;
 	description?: string;
 	status?: string;
 	emoji?: string;
